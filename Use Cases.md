@@ -65,3 +65,4 @@ The administrator either sends the message or schedules it
 The system saves the delivery for later review
 Outcome: All users in the institution receive important information 
 Related Requirements: RA3, RA4
+<img width="692" height="1165" alt="image" src="https://github.com/user-attachments/assets/a60d40e7-9d6a-4cbb-b256-282a0325739b" />
