@@ -38,12 +38,25 @@ Justification:
   -Event-driven design supports notifications and alerts
 
 3. Define the Top-level modules
-Core components
 
+Core components
  1. Conversational interface service
    -Handles voice/chat input-output
  2. NLP/AI Processing service
-   -uses AI model for detecting intention and generating response
+   -uses AI model for detecting intention and generating a response
  3. User profile & interaction history service
    -stores personalization data
  4. Academic data integration service
+   -connects to external systems
+ 5. Notification engine
+   -sends deadlines, announcements, and reminders
+ 6. Analytics service
+   -Dashboards & academic insights
+ 7. Authentication/SSo Service
+   -OAuth / Single sign-on
+ 8. API gateway
+   -Entry point for all requests
+ 9.Frontend UI ( web + Mobile)
+   -The actual interface for users
+
+
