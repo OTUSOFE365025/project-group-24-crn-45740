@@ -170,3 +170,16 @@ Table 3 links the main quality attributes from Iteration 1 to the concrete desig
 | Scalability       | Support at least 5000 concurrent users                   | Microservices with independent autoscaling groups and stateless conversation layer            |
 | Modifiability     | Ability to switch AI model provider without major rework | NLP Service hides model provider behind a stable interface and configurable model version     |
 | Usability         | Intuitive conversational interface                       | Dedicated Conversation Service plus Web and Mobile clients optimized for chat interactions    |
+
+### 2.5 Design decisions for Iterations 1 and 2
+
+#### Table 4 – Main design decisions and justification
+
+| Iteration | Decision                                                | Alternatives considered           | Justification                                                                                             |
+|----------|----------------------------------------------------------|-----------------------------------|-----------------------------------------------------------------------------------------------------------|
+| 1        | Use microservices with an API gateway                    | Single monolithic web application | Microservices allow independent scaling, clearer separation of concerns and easier integration with LMS  |
+| 1        | Use AI based NLP for query interpretation                | Rule based keyword matching       | Natural language questions need flexible interpretation and learning from interaction history            |
+| 1        | Store user profile and history in a dedicated service    | Embed all data in conversation    | Separates personalization concerns and supports future analytics and privacy rules                        |
+| 2        | Add a message queue in front of the NLP service          | Direct synchronous calls only     | Smooths traffic spikes before exams and prevents timeouts while keeping response time within target      |
+| 2        | Introduce a data synchronization service for LMS linkage | Each service calls LMS directly   | Centralizes retries, caching and conflict resolution and simplifies error handling                        |
+| 2        | Use an event bus for notifications                       | Immediate direct sends only       | Events make deadline reminders and announcements reliable and decoupled from the main request path       |
