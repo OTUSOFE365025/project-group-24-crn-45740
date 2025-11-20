@@ -106,4 +106,30 @@ Remaining issues to be solved in future iterations:
 - Detailed role-based access rules for faculty, staff, students, and admins.
 - Long-term data retention/deletion policies for logs and user history.
 - Capacity planning for peak loads (exam times, registration periods).
-     
+
+
+### 2.3 Sequence diagrams and service interfaces
+
+The following sequence diagrams show how the logical architecture is used for key use cases.
+
+- `diagrams/seq_student_query.puml`: student asking “When is my next exam”
+- `diagrams/seq_lecturer_announcement.puml`: lecturer posting a course announcement
+
+#### Table 2 – Service methods used in the sequence diagrams
+
+| Service                                | Method name                                   | Description                                                               |
+|----------------------------------------|-----------------------------------------------|---------------------------------------------------------------------------|
+| Web Client                             | typeQuestion(text)                            | Captures the question that the user types                                |
+| Web Client                             | submitAnnouncement(token, courseId, text)     | Sends an announcement form for a course                                  |
+| API Gateway                            | postMessage(token, text)                      | HTTP endpoint for sending a new conversational message                   |
+| API Gateway                            | postAnnouncement(token, courseId, text)       | HTTP endpoint for posting a new announcement                             |
+| Auth and SSO Service                   | validateToken(token)                          | Validates SSO token and returns user identity and roles                  |
+| Conversation Service                   | handleMessage(userId, text)                   | Main entry point for processing a conversational message                 |
+| Conversation Service                   | handleAnnouncement(userId, courseId, text)    | Processes an announcement created by a lecturer                          |
+| NLP Service                            | interpretQuery(text, context)                 | Performs intent detection and entity extraction                          |
+| Academic Data Integration Service      | getNextExamSchedule(userId)                   | Reads upcoming exam information for the student from external systems    |
+| Academic Data Integration Service      | saveAnnouncement(courseId, text)              | Persists the announcement for a course                                   |
+| Notification Service                   | scheduleAnnouncementNotifications(courseId, text) | Schedules notifications to students subscribed to the course        |
+| Web Client                             | showAnswer(responseText)                      | Displays the assistant answer to the student                              |
+| Web Client                             | showSuccess()                                 | Shows a success message after the lecturer post                          |
+
