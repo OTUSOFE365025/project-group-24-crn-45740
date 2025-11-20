@@ -158,3 +158,15 @@ All refined components support the targeted drivers.
 - History/log retention and privacy policies  
 - Scaling during high-traffic periods (exams, registration weeks)  
 
+### 2.4 Quality attributes addressed by the architecture
+
+Table 3 links the main quality attributes from Iteration 1 to the concrete design decisions in Iteration 2.
+
+| Quality attribute | Scenario                                                  | Architectural support                                                                          |
+|-------------------|-----------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| Performance       | Answer user questions in under two seconds               | GPU capable NLP service behind a queue, caching in data services, stateless app instances     |
+| Availability      | Remain available 99.5 percent of the time per month      | Multiple instances behind a load balanced API gateway and health checks in the cloud platform |
+| Security          | Only authorized users see their own data                 | Institution SSO, token validation in the gateway, role based checks in each service           |
+| Scalability       | Support at least 5000 concurrent users                   | Microservices with independent autoscaling groups and stateless conversation layer            |
+| Modifiability     | Ability to switch AI model provider without major rework | NLP Service hides model provider behind a stable interface and configurable model version     |
+| Usability         | Intuitive conversational interface                       | Dedicated Conversation Service plus Web and Mobile clients optimized for chat interactions    |
