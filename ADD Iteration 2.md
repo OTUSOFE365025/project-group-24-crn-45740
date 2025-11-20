@@ -162,8 +162,12 @@ All refined components support the targeted drivers.
 
 The following sequence diagrams show how the logical architecture is used for key use cases.
 
-- `diagrams/seq_student_query.puml`: student asking “When is my next exam”
-- `diagrams/seq_lecturer_announcement.puml`: lecturer posting a course announcement
+Student Sequence Diagram: When is my next exam 
+<img width="1416" height="567" alt="image" src="https://github.com/user-attachments/assets/f51c49c3-a072-44d6-a1b7-59bdc0dc1015" />
+
+Teacher Sequence Diagram: Lecturer Posts an Announcement
+<img width="1709" height="917" alt="image" src="https://github.com/user-attachments/assets/1d6eff49-5988-4c2c-b978-5f59b9721805" />
+
 
 #### Table 2 – Service methods used in the sequence diagrams
 
