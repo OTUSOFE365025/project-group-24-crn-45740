@@ -38,16 +38,5 @@ Data Source Systems(D): External university systems that provide information to 
 - Must use existing university infrastructure and APIs (RD2)
 - Cloud-native deployment with continuous updates (R7, RM1)
 
-## Architecture Design Deliverables (ADD – Exercise 8)
-The ADD iterations and diagrams are located here:
-- Iteration 1: `docs/add_iterations.md` section 1 (Architectural Drivers and Top Level Architecture)
-- Iteration 2: `docs/add_iterations.md` section 2 (Refinement, Quality Scenarios, Sequence and Deployment Views)
-- Logical architecture diagram: `diagrams/logical_architecture.puml`
-- Sequence diagrams and method table: `docs/add_iterations.md` section 2.3 and `diagrams/seq_student_query.puml`, `diagrams/seq_lecturer_announcement.puml`
-- Deployment diagram: `diagrams/deployment_architecture.puml`
-
-Open `docs/add_iterations.md` to read Iterations 1 and 2 in order.
-
-
 ## Summary  
 AIDAP makes it easier for universities to run their operations by providing a single platform through which to access academic information. For students, this means receiving personalized help; for teachers, it is a matter of having efficient communication tools; and for administrators, it is a matter of being able to manage the entire process from one central location. These business and architectural drivers not only outline the foundation for all subsequent ADD iterations and design decisions but also help sustain them.
