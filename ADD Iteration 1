@@ -1,1 +1,85 @@
+<h1>ADD Iteration 1</h1>
+
+<h2>Architectural Drivers</h2>
+
+<h3>Functional Requirements</h3>
+
+| Requirement | Description |
+|------------|-------------|
+| R1 | Provide conversational access to institutional data. |
+| R3 | Integrate with LMS, Registration, Calendar systems. |
+| RS2 | Notify students of deadlines and changes. |
+| RL2 | Allow lecturers to post announcements. |
+| RS3 / RL3 | Provide personalized dashboards and analytics. |
+| R5 | Use AI/NLP for understanding queries. |
+| RS7 | Provide secure SSO authentication. |
+
+<br>
+
+<h3>Quality Attributes</h3>
+
+| Attribute | Scenario | Measure |
+|-----------|----------|---------|
+| **Performance** | Student asks a question through chat. | System replies within ≤ 2 seconds (RS10). |
+| **Availability** | One server fails during peak hours. | ≥ 99.5% uptime (RA6, RS11). |
+| **Security** | User tries to access data without login. | Access denied. Zero data leaks (RS7, RS8, RA5). |
+| **Scalability** | 5000 students use the system during exam week. | No lag, stable response time (RA7). |
+| **Usability** | A new student completes their first task. | ≤ 1 minute with no help (RS9, RS12). |
+| **Interoperability** | Sync calendar data with external applications. | Exports correctly to Google/Outlook (RS13, RD2). |
+| **Modifiability** | Maintainer updates AI model. | No downtime (RM1, RM5). |
+
+<br>
+
+<h3>Constraints</h3>
+
+| Constraint | Description |
+|-----------|-------------|
+| C1 | Must deploy as cloud-native microservices. |
+| C2 | Must comply with data security/privacy rules. |
+| C3 | Must integrate with existing university systems. |
+| C4 | Must use AI-based NLP models. |
+
+<br>
+
+<h3>Architectural Concerns</h3>
+
+| Concern | Description |
+|---------|-------------|
+| Data Privacy | Protect student-specific information. |
+| Performance | Ensure fast AI inference. |
+| System Integration | Connect smoothly to LMS, Registration, Calendar. |
+| Reliability | Handle failures gracefully. |
+| AI Model Updates | Must update without disruption. |
+
+<br>
+
+<h2>Reference Architecture</h2>
+
+| Decision | Reason |
+|----------|--------|
+| **Microservices Architecture** | Independent scaling, reliability, faster updates. |
+| **Event-Driven Notifications** | Ideal for triggers, reminders, and alerts. |
+| **API Gateway** | Single entry for all clients. |
+| **Kubernetes Deployment** | Auto-scaling + self-healing. |
+
+<br>
+
+<h2>High-Level Modules</h2>
+
+| Component | Responsibility |
+|-----------|----------------|
+| Conversational Interface | Handles chat/voice requests. |
+| AI/NLP Service | Intent detection and response generation. |
+| User History Service | Stores preferences + interactions. |
+| Academic Integration | Connects to LMS, Registration, Calendar. |
+| Notification Engine | Deadlines + announcements. |
+| Analytics Service | Insights for lecturers/admins. |
+| Authentication/SSO | Identity management. |
+| API Gateway | Routing and throttling. |
+| Frontend UI | Web/mobile interface. |
+
+<br>
+
+<h2>Top-Level Component Diagram</h2>
+
 
