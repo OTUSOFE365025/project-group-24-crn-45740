@@ -38,10 +38,8 @@ Data Source Systems(D): External university systems that provide information to 
 - Must use existing university infrastructure and APIs (RD2)
 - Cloud-native deployment with continuous updates (R7, RM1)
 
-  ## Architecture Design Deliverables (ADD – Exercise 8)
-
+## Architecture Design Deliverables (ADD – Exercise 8)
 The ADD iterations and diagrams are located here:
-
 - Iteration 1: `docs/add_iterations.md` section 1 (Architectural Drivers and Top Level Architecture)
 - Iteration 2: `docs/add_iterations.md` section 2 (Refinement, Quality Scenarios, Sequence and Deployment Views)
 - Logical architecture diagram: `diagrams/logical_architecture.puml`
