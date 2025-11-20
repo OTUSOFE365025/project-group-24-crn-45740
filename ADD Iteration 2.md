@@ -158,6 +158,31 @@ All refined components support the targeted drivers.
 - History/log retention and privacy policies  
 - Scaling during high-traffic periods (exams, registration weeks)  
 
+### 2.3 Sequence diagrams and service interfaces
+
+The following sequence diagrams show how the logical architecture is used for key use cases.
+
+- `diagrams/seq_student_query.puml`: student asking “When is my next exam”
+- `diagrams/seq_lecturer_announcement.puml`: lecturer posting a course announcement
+
+#### Table 2 – Service methods used in the sequence diagrams
+
+| Service                                | Method name                                   | Description                                                               |
+|----------------------------------------|-----------------------------------------------|---------------------------------------------------------------------------|
+| Web Client                             | typeQuestion(text)                            | Captures the question that the user types                                |
+| Web Client                             | submitAnnouncement(token, courseId, text)     | Sends an announcement form for a course                                  |
+| API Gateway                            | postMessage(token, text)                      | HTTP endpoint for sending a new conversational message                   |
+| API Gateway                            | postAnnouncement(token, courseId, text)       | HTTP endpoint for posting a new announcement                             |
+| Auth and SSO Service                   | validateToken(token)                          | Validates SSO token and returns user identity and roles                  |
+| Conversation Service                   | handleMessage(userId, text)                   | Main entry point for processing a conversational message                 |
+| Conversation Service                   | handleAnnouncement(userId, courseId, text)    | Processes an announcement created by a lecturer                          |
+| NLP Service                            | interpretQuery(text, context)                 | Performs intent detection and entity extraction                          |
+| Academic Data Integration Service      | getNextExamSchedule(userId)                   | Reads upcoming exam information for the student from external systems    |
+| Academic Data Integration Service      | saveAnnouncement(courseId, text)              | Persists the announcement for a course                                   |
+| Notification Service                   | scheduleAnnouncementNotifications(courseId, text) | Schedules notifications to students subscribed to the course        |
+| Web Client                             | showAnswer(responseText)                      | Displays the assistant answer to the student                              |
+| Web Client                             | showSuccess()                                 | Shows a success message after the lecturer post                          |
+
 ### 2.4 Quality attributes addressed by the architecture
 
 Table 3 links the main quality attributes from Iteration 1 to the concrete design decisions in Iteration 2.
