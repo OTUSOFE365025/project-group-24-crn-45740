@@ -57,6 +57,7 @@ Core components
    -Entry point for all requests
  9.Frontend UI ( web + Mobile)
 
+
 ### 1.5 Logical Architecture Diagram
 
 The logical view of the AIDAP system is shown in `diagrams/logical_architecture.puml`.
