@@ -208,3 +208,21 @@ Table 3 links the main quality attributes from Iteration 1 to the concrete desig
 | 2        | Add a message queue in front of the NLP service          | Direct synchronous calls only     | Smooths traffic spikes before exams and prevents timeouts while keeping response time within target      |
 | 2        | Introduce a data synchronization service for LMS linkage | Each service calls LMS directly   | Centralizes retries, caching and conflict resolution and simplifies error handling                        |
 | 2        | Use an event bus for notifications                       | Immediate direct sends only       | Events make deadline reminders and announcements reliable and decoupled from the main request path       |
+
+### 2.7 Deployment architecture
+
+The deployment view of the system is described in `diagrams/deployment_architecture.puml`.
+
+#### Table 6 – Deployment nodes and their responsibilities
+
+| Node or element               | Responsibility                                                                      |
+|-------------------------------|--------------------------------------------------------------------------------------|
+| Student, Lecturer, Admin devices | Run web browsers that host the React based AIDAP client                            |
+| Web Frontend Host             | Serves the built React application and static assets                                |
+| API Gateway and Load Balancer | Terminates HTTPS, routes requests to application services and performs health checks |
+| Application Service Cluster   | Runs the conversation, NLP, profile, data integration, analytics, notification and auth services as containers |
+| NLP Service (GPU)             | Uses GPU resources to execute the AI model efficiently                              |
+| AIDAP Database                | Stores core application data, interaction history and configuration                 |
+| Event Bus                     | Transports events for notification and asynchronous processing                      |
+| Monitoring and Logging        | Collects metrics and logs for maintainers                                           |
+| University Systems            | External LMS, registration, calendar and email providers                            |
