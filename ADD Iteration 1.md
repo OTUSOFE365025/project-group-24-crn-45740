@@ -91,8 +91,6 @@ Web and mobile interfaces for all users.
 
 ---
 
----
-
 ## 1.6 Logical Architecture Elements
 
 ### Table 1. Logical Architecture Elements
