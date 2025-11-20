@@ -80,7 +80,7 @@
 
 ---
 
-# 🚀 **INSERT DIAGRAM HERE**
+# **INSERT DIAGRAM HERE**
 
 ## 1.5 Logical Architecture Diagram
 
