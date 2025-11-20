@@ -58,29 +58,42 @@ Core components
  9.Frontend UI ( web + Mobile)
 
 
-### 1.5 Logical Architecture Diagram
+1.5 Logical Architecture Diagram
 
 The logical view of the AIDAP system is shown in `diagrams/logical_architecture.puml`.
 
-#### Table 1 – Logical architecture elements
+Table 1 – Logical Architecture Elements
 
-| Component name                        | Responsibility                                                                 |
-|--------------------------------------|-------------------------------------------------------------------------------|
-| Web Client                           | Browser based interface for students, lecturers and administrators           |
-| Mobile Client                        | Mobile interface for students                                                |
-| API Gateway                          | Single entry point, routing, rate limiting and security checks               |
-| Conversation Service                 | Orchestrates conversations, maintains context and routes to NLP and data     |
-| NLP Service                          | Interprets natural language queries and returns intents and parameters        |
-| User Profile Service                 | Stores preferences, history and personalization data                         |
-| Academic Data Integration Service    | Connects to LMS, registration, calendars and email servers                   |
-| Notification Service                 | Sends deadline reminders and announcements using events                      |
-| Analytics Service                    | Computes dashboards and aggregated analytics for students and lecturers      |
-| Auth and SSO Service                 | Integrates with institution SSO and enforces role based access               |
-| AIDAP Database                       | Stores core application data and interaction history                         |
-| Event Bus                            | Carries events for notifications and background tasks                        |
-| University Systems                   | External LMS, registration, calendar and email systems                       |
++-------------------------------------------+---------------------------------------------------------------+
+| Component Name                            | Responsibility                                                |
++-------------------------------------------+---------------------------------------------------------------+
+| Web Client                                | Browser interface used by students, lecturers, administrators |
++-------------------------------------------+---------------------------------------------------------------+
+| Mobile Client                             | Mobile application interface for students                     |
++-------------------------------------------+---------------------------------------------------------------+
+| API Gateway                               | Central entry point, routing, rate limiting, security checks  |
++-------------------------------------------+---------------------------------------------------------------+
+| Conversation Service                      | Manages dialog flow, context, and request orchestration       |
++-------------------------------------------+---------------------------------------------------------------+
+| NLP Service                                | Interprets natural language and returns intents and entities  |
++-------------------------------------------+---------------------------------------------------------------+
+| User Profile Service                       | Stores preferences, history, and personalization data         |
++-------------------------------------------+---------------------------------------------------------------+
+| Academic Data Integration Service          | Connects to LMS, registration, calendar, and email systems    |
++-------------------------------------------+---------------------------------------------------------------+
+| Notification Service                        | Sends reminders, deadlines, announcements via events          |
++-------------------------------------------+---------------------------------------------------------------+
+| Analytics Service                           | Provides dashboards, performance metrics, and insights        |
++-------------------------------------------+---------------------------------------------------------------+
+| Authentication and SSO Service              | Integrates with university SSO and enforces access control    |
++-------------------------------------------+---------------------------------------------------------------+
+| AIDAP Database                              | Stores application data and interaction history               |
++-------------------------------------------+---------------------------------------------------------------+
+| Event Bus                                   | Broadcasts events for notifications and background tasks      |
++-------------------------------------------+---------------------------------------------------------------+
+| University External Systems                 | LMS, Registration, Calendar, Email servers                    |
++-------------------------------------------+---------------------------------------------------------------+
 
-   -The actual interface for users
 
 
 
