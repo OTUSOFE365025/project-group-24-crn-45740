@@ -84,13 +84,7 @@
 
 ## 1.5 Logical Architecture Diagram
 
-> **Put your logical architecture diagram image right here.**  
-> File location suggestion: `../diagrams/logical_architecture.png`
-
-```markdown
-![Logical Architecture](<img width="975" height="680" alt="image" src="https://github.com/user-attachments/assets/0cb03eeb-d6ba-49d7-9fb5-c0e2d88d5c33" />
-)
-```
+Logical Architecture <img width="975" height="680" alt="image" src="https://github.com/user-attachments/assets/0cb03eeb-d6ba-49d7-9fb5-c0e2d88d5c33" />
 
 ---
 
