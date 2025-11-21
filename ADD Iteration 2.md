@@ -1,233 +1,146 @@
-# ADD Iteration 2
+# Iteration 2 – Refined Architecture and Views for AIDAP
 
-## 1. Confirm the Iteration Goal and Selected Drivers
+## 1. Iteration Goal and Selected Drivers
 
-This iteration focuses on drivers that affect **security**, **performance**, **data-source reliability**, and **personalization**.
+The goal of Iteration 2 is to refine the AIDAP architecture and produce detailed architectural views. The focus of this iteration is on drivers related to:
 
-### 1.1 Performance & Scalability
-- RS10  
-- RS11  
-- RA7  
+- Performance and scalability (RS10, RA7)  
+- Security and privacy (RS7, RS8, RA5, RM7)  
+- Data source reliability (RD1 to RD3)  
+- Personalization and analytics (RS3, R2, RL3, RA4)  
 
-### 1.2 Security & Privacy
-- RS7  
-- RS8  
-- RA5  
-- RM7  
-
-### 1.3 Personalization & History
-- R2  
-- RS3  
-- RS5  
-- RS6  
-
-### 1.4 Reliable Integration with University Systems
-- R3  
-- RD1  
-- RD2  
-- RD3  
-- RD4  
+These represent the highest risk and highest architectural impact areas.
 
 ---
 
-## 2. Choose the Element to Refine
+## 2. Updated Scenarios
 
-**Element Selected:** Conversational Core and Data Integration Subsystem
+### Scenario S4 – High Load During Exam Week
+- Thousands of simultaneous student questions  
+- System must maintain sub two second response time  
+- Horizontal scaling required  
 
-This refinement includes:
+### Scenario S5 – Data Source Outage
+- LMS or Registration service becomes unavailable  
+- Adapter handles retry logic and partial degradation  
+- Assistant returns partial but correct information  
+
+### Scenario S6 – Personalized Student Dashboard
+- Student asks for upcoming deadlines plus risk indicators  
+- Requires history, analytics, and real time data  
+
+---
+
+## 3. Refined Architectural Views
+
+### 3.1 Logical Architecture View
+
+The platform is composed of the following logical components:
+
+- Web and Mobile Clients  
+- API Gateway  
+- Authentication and Identity Service  
 - Conversation Orchestrator  
-- NLP / Model Gateway  
-- Personalization Components  
-- Session & Context Storage  
+- AI Model Adapter  
+- Domain Services  
+  - Student Service  
+  - Lecturer Service  
+  - Administrator Service  
+  - Analytics Service  
+- Integration Adapters  
+  - LMS Adapter  
+  - Registration Adapter  
+  - Calendar Adapter  
+  - Email Adapter  
+- Database and Cache  
+- Logging and Monitoring Services  
 
-This subsystem was selected because it directly impacts **security**, **performance**, **personalization**, and **external integrations**.
+ 
+## **Logical Architecture Diagram**  
+<img width="975" height="680" alt="image" src="https://github.com/user-attachments/assets/49621f10-98d3-4aba-b2d2-b68962c5e321" />
+
 
 ---
 
-## 3. Identify Design Concepts, Patterns, and Approaches
+## 3.2 Process / Runtime View
 
-The following design concepts are applied in this iteration:
+A typical runtime flow for student exam lookup:
 
-- Microservice decomposition of the conversational core  
-- API Gateway as the system entry point  
-- Stateless services with shared session/context store  
-- Event-driven integration using queues and retries  
-- Read-optimized query service for dashboards  
-- Central monitoring and metrics for observability  
+1. Client sends query  
+2. API gateway forwards request  
+3. Identity service validates SSO token  
+4. Orchestrator sends message to AI adapter  
+5. AI detects intent + entities  
+6. Domain service fetches required data  
+7. Response generator formats output  
 
-These concepts address availability, reliability, scalability, and personalization.
+## **Lecturer Sequence Diagrams**
+<img width="1709" height="917" alt="image" src="https://github.com/user-attachments/assets/a9176f55-71ba-4325-a9ab-72d1e8d64d1e" />
+
+## **Student Sequence Diagram**
+<img width="1416" height="567" alt="image" src="https://github.com/user-attachments/assets/a21665d5-2d54-4207-b348-23b827af6b70" />
+
 
 ---
 
-## 4. Decompose the Selected Element
+## 3.3 Security View
 
-The subsystem is decomposed into the following components:
+Security decisions include:
 
-1. **API Gateway Service**  
-   Performs SSO token validation, routing, and rate-limiting  
-
-2. **Conversation Orchestrator**  
-   Manages the conversation flow and session retrieval  
-
-3. **NLP / Model Gateway Service**  
-   Handles AI model calls, versioning, prompt management, and timeout protection  
-
-4. **Personalization Service**  
-   Stores user preferences and history summaries  
-
-5. **Integration Facade Service**  
-   Connects to LMS, registration, calendar, and email systems, with retries and mapping  
-
-6. **Session & Context Store**  
-   Holds conversation context shared across user channels  
-
-7. **Read-Optimized Dashboard Query Service**  
-   Provides pre-computed analytics and fast dashboard access  
-
-8. **Monitoring & Metrics Component**  
-   Provides system-level metrics, logs, and traces  
+- TLS for all external communication  
+- SSO is mandatory for authentication  
+- RBAC enforced at domain service layer  
+- Data encrypted at rest  
+- Strict logging and monitoring for incident detection  
 
 ---
 
-## 5. Define Interfaces
+## 3.4 Deployment Architecture View
 
-### Key Interfaces
+Deployment is cloud based and supports horizontal scaling.
 
-- **12-1: Client → API Gateway:**  
-  Authentication, normalization, and forwarding  
+### Components:
+- Load Balancer  
+- API Gateway  
+- Multiple AIDAP Application Servers  
+- Database cluster  
+- Cache layer  
+- External systems: SSO, LMS, Registration, Calendar, Email  
 
-- **12-2: API Gateway → Conversation Orchestrator:**  
-  REST/gRPC internal calls  
+ 
+## **Deployment Architecture Diagram**  
+<img width="1903" height="1226" alt="image" src="https://github.com/user-attachments/assets/96b268df-1073-4153-96fd-b4687a7ef62b" />
 
-- **12-3: Orchestrator ↔ Session & Context Store:**  
-  Read/write session state  
-
-- **12-4: Orchestrator → NLP / Model Gateway:**  
-  Prompt requests, timeouts, circuit breakers  
-
-- **12-5: Orchestrator ↔ Personalization Service:**  
-  Fetch personalization data, submit history updates  
-
-- **12-6: Orchestrator → Integration Facade:**  
-  Real-time academic data access  
-
-- **12-7: Integration Facade ↔ External Systems:**  
-  REST/GraphQL, scheduled sync jobs, retry queues  
-
-- **12-8: All Services → Monitoring System:**  
-  Logs, metrics, traces  
 
 ---
 
-## 6. Verify & Validate Against Drivers
+## 4. Evaluation Against Drivers
 
-### Performance & Scalability
-- Stateless services  
-- Session store  
-- Read-optimized queries  
-- Independent scaling  
+### Performance and Scalability
+- Horizontal autoscaling  
+- Cached responses  
+- Dedicated AI model adapter  
 
-### Security & Privacy
-- SSO validation at gateway  
-- Role-based access  
-- Internal-only communication  
-- Logging and auditing  
+### Security and Privacy
+- SSO integration  
+- RBAC enforcement  
+- Encrypted data storage  
 
-### Personalization
-- Dedicated personalization service  
-- Session continuity  
-- History summaries  
+### Data Reliability
+- Retry policies  
+- Partial data fallback  
+- Health checks for adapters  
 
-### Integration Reliability
-- Integration façade  
-- Retry queues  
-- Scheduled sync jobs  
-- Circuit breakers  
-
-All refined components support the targeted drivers.
+### Personalization and Analytics
+- Historic conversation storage  
+- LMS activity and calendar data aggregation  
 
 ---
 
-## 7. Record Risks, Issues, and Trade-offs
+## 5. Remaining Risks
+- AI intent accuracy for domain specific content  
+- Performance under heavy exam period load  
+- Privacy issues for conversation logs  
 
-### Remaining Architectural Risks
+---
 
-- Choosing message broker, session store, and monitoring stack  
-- Balancing model latency with compute cost  
-- Detailed RBAC rules for students, staff, faculty, and admins  
-- History/log retention and privacy policies  
-- Scaling during high-traffic periods (exams, registration weeks)  
-
-### 2.3 Sequence diagrams and service interfaces
-
-The following sequence diagrams show how the logical architecture is used for key use cases.
-
-Student Sequence Diagram: When is my next exam 
-<img width="1416" height="567" alt="image" src="https://github.com/user-attachments/assets/f51c49c3-a072-44d6-a1b7-59bdc0dc1015" />
-
-Teacher Sequence Diagram: Lecturer Posts an Announcement
-<img width="1709" height="917" alt="image" src="https://github.com/user-attachments/assets/1d6eff49-5988-4c2c-b978-5f59b9721805" />
-
-
-#### Table 2 – Service methods used in the sequence diagrams
-
-| Service                                | Method name                                   | Description                                                               |
-|----------------------------------------|-----------------------------------------------|---------------------------------------------------------------------------|
-| Web Client                             | typeQuestion(text)                            | Captures the question that the user types                                |
-| Web Client                             | submitAnnouncement(token, courseId, text)     | Sends an announcement form for a course                                  |
-| API Gateway                            | postMessage(token, text)                      | HTTP endpoint for sending a new conversational message                   |
-| API Gateway                            | postAnnouncement(token, courseId, text)       | HTTP endpoint for posting a new announcement                             |
-| Auth and SSO Service                   | validateToken(token)                          | Validates SSO token and returns user identity and roles                  |
-| Conversation Service                   | handleMessage(userId, text)                   | Main entry point for processing a conversational message                 |
-| Conversation Service                   | handleAnnouncement(userId, courseId, text)    | Processes an announcement created by a lecturer                          |
-| NLP Service                            | interpretQuery(text, context)                 | Performs intent detection and entity extraction                          |
-| Academic Data Integration Service      | getNextExamSchedule(userId)                   | Reads upcoming exam information for the student from external systems    |
-| Academic Data Integration Service      | saveAnnouncement(courseId, text)              | Persists the announcement for a course                                   |
-| Notification Service                   | scheduleAnnouncementNotifications(courseId, text) | Schedules notifications to students subscribed to the course        |
-| Web Client                             | showAnswer(responseText)                      | Displays the assistant answer to the student                              |
-| Web Client                             | showSuccess()                                 | Shows a success message after the lecturer post                          |
-
-### 2.4 Quality attributes addressed by the architecture
-
-Table 3 links the main quality attributes from Iteration 1 to the concrete design decisions in Iteration 2.
-
-| Quality attribute | Scenario                                                  | Architectural support                                                                          |
-|-------------------|-----------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| Performance       | Answer user questions in under two seconds               | GPU capable NLP service behind a queue, caching in data services, stateless app instances     |
-| Availability      | Remain available 99.5 percent of the time per month      | Multiple instances behind a load balanced API gateway and health checks in the cloud platform |
-| Security          | Only authorized users see their own data                 | Institution SSO, token validation in the gateway, role based checks in each service           |
-| Scalability       | Support at least 5000 concurrent users                   | Microservices with independent autoscaling groups and stateless conversation layer            |
-| Modifiability     | Ability to switch AI model provider without major rework | NLP Service hides model provider behind a stable interface and configurable model version     |
-| Usability         | Intuitive conversational interface                       | Dedicated Conversation Service plus Web and Mobile clients optimized for chat interactions    |
-
-### 2.5 Design decisions for Iterations 1 and 2
-
-#### Table 4 – Main design decisions and justification
-
-| Iteration | Decision                                                | Alternatives considered           | Justification                                                                                             |
-|----------|----------------------------------------------------------|-----------------------------------|-----------------------------------------------------------------------------------------------------------|
-| 1        | Use microservices with an API gateway                    | Single monolithic web application | Microservices allow independent scaling, clearer separation of concerns and easier integration with LMS  |
-| 1        | Use AI based NLP for query interpretation                | Rule based keyword matching       | Natural language questions need flexible interpretation and learning from interaction history            |
-| 1        | Store user profile and history in a dedicated service    | Embed all data in conversation    | Separates personalization concerns and supports future analytics and privacy rules                        |
-| 2        | Add a message queue in front of the NLP service          | Direct synchronous calls only     | Smooths traffic spikes before exams and prevents timeouts while keeping response time within target      |
-| 2        | Introduce a data synchronization service for LMS linkage | Each service calls LMS directly   | Centralizes retries, caching and conflict resolution and simplifies error handling                        |
-| 2        | Use an event bus for notifications                       | Immediate direct sends only       | Events make deadline reminders and announcements reliable and decoupled from the main request path       |
-
-### 2.7 Deployment architecture
-
-<img width="1903" height="1226" alt="image" src="https://github.com/user-attachments/assets/ef1b3b55-78a5-4acd-aede-0628c79df6c9" />
-
-
-#### Table 6 – Deployment nodes and their responsibilities
-
-| Node or element               | Responsibility                                                                      |
-|-------------------------------|--------------------------------------------------------------------------------------|
-| Student, Lecturer, Admin devices | Run web browsers that host the React based AIDAP client                            |
-| Web Frontend Host             | Serves the built React application and static assets                                |
-| API Gateway and Load Balancer | Terminates HTTPS, routes requests to application services and performs health checks |
-| Application Service Cluster   | Runs the conversation, NLP, profile, data integration, analytics, notification and auth services as containers |
-| NLP Service (GPU)             | Uses GPU resources to execute the AI model efficiently                              |
-| AIDAP Database                | Stores core application data, interaction history and configuration                 |
-| Event Bus                     | Transports events for notification and asynchronous processing                      |
-| Monitoring and Logging        | Collects metrics and logs for maintainers                                           |
-| University Systems            | External LMS, registration, calendar and email providers                            |
