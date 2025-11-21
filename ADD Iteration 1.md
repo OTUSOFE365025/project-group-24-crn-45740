@@ -1,108 +1,109 @@
-# Iteration 1 – Architectural Drivers and Initial Design
+# Iteration 1 – Initial Architecture for AIDAP
 
-## 1. Architectural Drivers
+## 1. Iteration Goal and Selected Drivers
 
-### 1.1 Functional Requirements
-- Provide conversational interface for academic questions (R1, RS1)  
-- Integrate with LMS, Registration, Calendars (R3)  
-- Notify students about deadlines (RS2)  
-- Allow lecturers to post announcements (RL2)  
-- Provide analytics and dashboards (RS3, RL3)  
-- Provide secure SSO authentication (RS7)
+The goal of Iteration 1 is to create the initial architecture for the AI Powered Digital Assistant Platform (AIDAP) based directly on the project requirements. This iteration focuses on the foundational functional and quality drivers that shape the system.
 
-### 1.2 Quality Attributes
-- **Performance:** Response time < 2 seconds (RS10)  
-- **Availability:** 99.5 percent uptime (RS11)  
-- **Security:** SSO, role-based access, institutional privacy compliance  
-- **Scalability:** Support for 5000+ concurrent users (RA7)  
-- **Modifiability:** Plug-in support for new AI models  
-- **Usability:** Intuitive UI and conversational behaviour  
+### Selected Drivers
+- **R1** Conversational access for institutional data  
+- **R3** Integration with LMS, Registration, Calendar  
+- **R5** AI models for natural language interpretation  
+- **R7** Cloud deployable and scalable system  
+- **RS1** Student conversational queries  
+- **RS7, RS8** SSO security and privacy  
+- **RS10, RS11** Response time and availability  
+- **RA5** Security compliance  
+- **RM7** Privacy and risk management  
 
-### 1.3 System Constraints
-- Must integrate with existing university systems  
-- Must use cloud-based deployment  
-- Must comply with institutional security/privacy policies  
-- Must use AI/NLP models for query interpretation (R5)
-
-### 1.4 Architectural Concerns
-- Protecting sensitive student data  
-- Fast response times under load  
-- Managing AI model updates  
-- Ensuring authorization boundaries  
-- Data consistency across multiple external systems  
+These define the primary direction of the initial architecture.
 
 ---
 
-## 2. Reference Architecture
+## 2. Architectural Drivers
 
-**Chosen Architecture:**  
-**Microservices + Event-Driven + Cloud-Native**
+### 2 point 1 Functional Requirements (From AIDAP PDF)
+- Conversational Q and A for students, lecturers, administrators  
+- Integration with LMS, Registration, Academic Calendar, Email  
+- Support for personalization and contextual responses  
+- Role separation (student, lecturer, admin)  
+- Ability to fetch deadlines, announcements, schedules, analytics  
 
-**Justification:**
-- Independent scaling of services  
-- AI processing isolated from user-facing components  
-- Microservice APIs match LMS/Registration integration needs  
-- Cloud-native deployment improves availability and resilience  
-- Event-driven design supports notifications & reminders  
+### 2 point 2 Quality Attributes
+- **Performance** Under 2 seconds average response time  
+- **Availability** 99.5 percent uptime  
+- **Security** SSO, RBAC, protected student data  
+- **Scalability** Thousands of concurrent users  
+- **Modifiability** Swap or upgrade AI models easily  
+- **Usability** Simple conversational UI on web and mobile  
 
----
-
-## 3. Top-Level Modules
-
-### Core Components
-
-1. **Conversational Interface Service**  
-   Handles chat/voice input + output and conversation state  
-
-2. **NLP / AI Processing Service**  
-   Interprets intent, extracts entities, and generates responses  
-
-3. **User Profile & Interaction History Service**  
-   Stores personalization data  
-
-4. **Academic Data Integration Service**  
-   Connects to LMS, Registration, Calendar, Email systems  
-
-5. **Notification Engine**  
-   Sends reminders, deadlines, announcements  
-
-6. **Analytics Service**  
-   Dashboards and academic insights  
-
-7. **Authentication / SSO Service**  
-   OAuth + institutional SSO  
-
-8. **API Gateway**  
-   Entry point, request routing, rate limiting, auth enforcement  
-
-9. **Frontend UI (Web + Mobile)**  
-   Primary user-facing interface  
+### 2 point 3 Constraints
+- Must use existing university systems (LMS, Registration, Calendar)
+- Must use standard APIs (REST)
+- Must support cloud deployment
+- Must support monitoring, logging, and model configuration
 
 ---
 
-# **INSERT DIAGRAM HERE**
+## 3. Key Scenarios
 
-## 1.5 Logical Architecture Diagram
+### Scenario S1 – Student Checks Next Exam
+1. Student logs in via SSO  
+2. Asks “When is my next exam for SOFE 3650”  
+3. AI interprets intent  
+4. System queries LMS and Registration  
+5. Gathers date and returns result  
 
-Logical Architecture <img width="975" height="680" alt="image" src="https://github.com/user-attachments/assets/0cb03eeb-d6ba-49d7-9fb5-c0e2d88d5c33" />
+### Scenario S2 – Lecturer Posts Course Announcement
+1. Lecturer logs in  
+2. Issues command to publish announcement  
+3. AI extracts course and content  
+4. LMS adapter posts announcement  
+5. Students receive message  
+
+### Scenario S3 – Administrator Requests Analytics
+1. Admin signs in  
+2. Asks “Show weekly usage statistics”  
+3. Analytics subsystem retrieves logs  
+4. System returns summary  
+
+---
+
+## 4. Initial Architectural Solution
+
+AIDAP is structured into three major layers.
+
+### 4 point 1 Layered Architecture Overview
+- **Presentation Layer**: Web chat, mobile chat  
+- **Application and AI Layer**: AI query processing, response generation, personalization  
+- **Integration Layer**: Connectors for LMS, Registration, Calendar, Email, and Analytics  
+
+### 4 point 2 Subsystems
+- User Interaction Gateway  
+- Authentication and Identity Service  
+- AI Query Processing Service  
+- Response Generation and Personalization Module  
+- Integration Adapters (LMS, Registration, Calendar, Email)  
+- Data Storage for history and preferences  
+- Monitoring and Configuration  
 
 ---
 
-## 1.6 Logical Architecture Elements Table
-
-| Component Name                        | Responsibility                                                             |
-|--------------------------------------|----------------------------------------------------------------------------|
-| API Gateway                          | Routing, throttling, SSO token validation                                 |
-| Conversation Service                 | Dialogue flow and orchestrating NLP + data services                       |
-| NLP Service                          | AI model calls, NLP inference, intent classification                      |
-| User Profile Service                 | Stores preferences and user history                                       |
-| Academic Data Integration Service    | Connects to LMS, Registration, Calendar, Email systems                    |
-| Notification Service                 | Sends announcements, reminders, deadlines                                 |
-| Analytics Service                    | Generates dashboards and analytics                                        |
-| Auth & SSO Service                   | Single sign-on integration + role validation                              |
-| Event Bus                            | Asynchronous event handling and background tasks                          |
-| AIDAP Database                       | Persistent storage for application data                                   |
-| Mobile/Web Clients                   | User-facing UIs                                                           |
-| University Systems                   | External LMS, Registration, Calendar, Email systems                       |
+## 5. Risks and Open Issues
+- AI interpretation accuracy under load  
+- Handling LMS or Registration outages  
+- Meeting availability targets  
+- Privacy and data retention compliance  
 
 ---
+
+## 6. Plan for Iteration 2
+- Add **Logical Architecture Diagram**  
+- Add **Process / Runtime View Diagram**  
+- Add **Deployment Diagram**  
+- Evaluate architecture against drivers  
+- Refine security, performance, and reliability decisions  
+
+---
+
+### **Logical Architecture Diagram**
+<img width="975" height="680" alt="image" src="https://github.com/user-attachments/assets/809d4dbc-bb88-49a9-984d-89fa980c9bc3" />
