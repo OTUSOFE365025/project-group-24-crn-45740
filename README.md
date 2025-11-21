@@ -1,7 +1,23 @@
 # SOFE3650F25-Project
 SOFE3650F25 Project Repository Template  
 
-# Business Drivers  
+## Repository Structure
+
+- `Use Cases.md` – Use case models (Deliverable 1)
+- `Quality Attributes.md` – Quality attributes
+- `Constraints.md` – System constraints
+- `Concerns.md` – Architectural concerns
+- `ADD Iteration 1.md` – ADD Iteration 1: drivers, reference architecture, logical view
+- `ADD Iteration 2.md` – ADD Iteration 2: refined components, sequence diagrams, deployment view
+
+## Business Drivers  
+
+- High volume of repetitive student inquiries about schedules, deadlines, and grades is overloading support staff.
+- Information is fragmented across multiple systems (LMS, registration, calendar), making it hard for students and lecturers to find what they need quickly.
+- The university wants better visibility into student engagement and risk patterns using analytics derived from system usage.
+- There is a strategic push to adopt AI and cloud technologies while still integrating with existing campus systems and SSO.
+- The institution needs to reduce operational costs by automating routine notifications and reminders.
+
 
 ## Project Overview  
 The AIDAP, which stands for AI-Powered Digital Assistant Platform, is a system that provides a talking interface to assist students, teachers, and administrators in managing and accessing academic and campus information with ease. Furthermore, it also collaborates with the respective university's system, such as the LMS, registration portal, calendar, and email services. Thus, through NLU, the system enables users to pose queries, check timetables, receive alerts, and manage academic records all in a quick and efficient manner.  
