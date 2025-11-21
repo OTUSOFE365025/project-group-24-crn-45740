@@ -17,17 +17,17 @@ The element we selected to refine is the Conversational Core and Data Integratio
 
 ### Scenario S4 – High Load During Exam Week
 - Thousands of simultaneous student questions  
-- System must maintain sub two second response time  
-- Horizontal scaling required  
+- The system must maintain a sub-two-second response time  
+- We also need to make sure it supports Horizontal scaling
 
 ### Scenario S5 – Data Source Outage
-- LMS or Registration service becomes unavailable  
-- Adapter handles retry logic and partial degradation  
-- Assistant returns partial but correct information  
+- The LMS or Registration service should become unavailable  
+- The adapter should handle retry logic and partial degradation  
+- The assistant should return partial but correct information  
 
 ### Scenario S6 – Personalized Student Dashboard
-- Student asks for upcoming deadlines plus risk indicators  
-- Requires history, analytics, and real time data  
+- The student will ask for upcoming deadlines and will also ask for risk indicators  
+- This will require history, analytics, and real-time data  
 
 ---
 
@@ -35,7 +35,7 @@ The element we selected to refine is the Conversational Core and Data Integratio
 
 ### 3.1 Logical Architecture View
 
-The platform is composed of the following logical components:
+Our platform will be composed of the following logical components:
 
 - Web and Mobile Clients  
 - API Gateway  
@@ -64,12 +64,12 @@ The platform is composed of the following logical components:
 
 ## 3.2 Process / Runtime View
 
-A typical runtime flow for student exam lookup:
+This is an example that can be a typical runtime flow for student exam lookup:
 
 1. Client sends query  
-2. API gateway forwards request  
+2. The API gateway forwards the request  
 3. Identity service validates SSO token  
-4. Orchestrator sends message to AI adapter  
+4. Orchestrator sends a message to the AI adapter  
 5. AI detects intent + entities  
 6. Domain service fetches required data  
 7. Response generator formats output  
@@ -89,7 +89,7 @@ Security decisions include:
 
 - TLS for all external communication  
 - SSO is mandatory for authentication  
-- RBAC enforced at domain service layer  
+- RBAC enforced at the domain service layer  
 - Data encrypted at rest  
 - Strict logging and monitoring for incident detection  
 
@@ -97,7 +97,7 @@ Security decisions include:
 
 ## 3.4 Deployment Architecture View
 
-Deployment is cloud based and supports horizontal scaling.
+Deployment is actually cloud-based and will support horizontal scaling.
 
 ### Components:
 - Load Balancer  
@@ -138,7 +138,7 @@ Deployment is cloud based and supports horizontal scaling.
 ---
 
 ## 5. Remaining Risks
-- AI intent accuracy for domain specific content  
+- AI intent accuracy for domain-specific content  
 - Performance under heavy exam period load  
 - Privacy issues for conversation logs  
 
