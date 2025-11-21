@@ -215,7 +215,8 @@ Table 3 links the main quality attributes from Iteration 1 to the concrete desig
 
 ### 2.7 Deployment architecture
 
-The deployment view of the system is described in `diagrams/deployment_architecture.puml`.
+<img width="1903" height="1226" alt="image" src="https://github.com/user-attachments/assets/ef1b3b55-78a5-4acd-aede-0628c79df6c9" />
+
 
 #### Table 6 – Deployment nodes and their responsibilities
 
