@@ -1,152 +1,145 @@
-# Iteration 2 – Conversational Core and Data Integration Refinement
+# Iteration 2 – Refined Architecture and Views for AIDAP
 
 ## 1. Iteration Goal and Selected Drivers
 
-The main goal for this iteration is to focus on drivers that shape security, performance, data reliability, and personalization.
+The goal of Iteration 2 is to refine the AIDAP architecture and produce detailed architectural views. The focus of this iteration is on drivers related to:
+
+- Performance and scalability (RS10, RA7)  
+- Security and privacy (RS7, RS8, RA5, RM7)  
+- Data source reliability (RD1 to RD3)  
+- Personalization and analytics (RS3, R2, RL3, RA4)  
+
+These represent the highest risk and highest architectural impact areas.
+
+---
+
+## 2. Updated Scenarios
+
+### Scenario S4 – High Load During Exam Week
+- Thousands of simultaneous student questions  
+- System must maintain sub two second response time  
+- Horizontal scaling required  
+
+### Scenario S5 – Data Source Outage
+- LMS or Registration service becomes unavailable  
+- Adapter handles retry logic and partial degradation  
+- Assistant returns partial but correct information  
+
+### Scenario S6 – Personalized Student Dashboard
+- Student asks for upcoming deadlines plus risk indicators  
+- Requires history, analytics, and real time data  
+
+---
+
+## 3. Refined Architectural Views
+
+### 3.1 Logical Architecture View
+
+The platform is composed of the following logical components:
+
+- Web and Mobile Clients  
+- API Gateway  
+- Authentication and Identity Service  
+- Conversation Orchestrator  
+- AI Model Adapter  
+- Domain Services  
+  - Student Service  
+  - Lecturer Service  
+  - Administrator Service  
+  - Analytics Service  
+- Integration Adapters  
+  - LMS Adapter  
+  - Registration Adapter  
+  - Calendar Adapter  
+  - Email Adapter  
+- Database and Cache  
+- Logging and Monitoring Services  
+
+ 
+## **Logical Architecture Diagram**  
+<img width="975" height="680" alt="image" src="https://github.com/user-attachments/assets/49621f10-98d3-4aba-b2d2-b68962c5e321" />
+
+
+---
+
+## 3.2 Process / Runtime View
+
+A typical runtime flow for student exam lookup:
+
+1. Client sends query  
+2. API gateway forwards request  
+3. Identity service validates SSO token  
+4. Orchestrator sends message to AI adapter  
+5. AI detects intent + entities  
+6. Domain service fetches required data  
+7. Response generator formats output  
+
+## **Lecturer Sequence Diagrams**
+<img width="1709" height="917" alt="image" src="https://github.com/user-attachments/assets/a9176f55-71ba-4325-a9ab-72d1e8d64d1e" />
+
+## **Student Sequence Diagram**
+<img width="1416" height="567" alt="image" src="https://github.com/user-attachments/assets/a21665d5-2d54-4207-b348-23b827af6b70" />
+
+
+---
+
+## 3.3 Security View
+
+Security decisions include:
+
+- TLS for all external communication  
+- SSO is mandatory for authentication  
+- RBAC enforced at domain service layer  
+- Data encrypted at rest  
+- Strict logging and monitoring for incident detection  
+
+---
+
+## 3.4 Deployment Architecture View
+
+Deployment is cloud based and supports horizontal scaling.
+
+### Components:
+- Load Balancer  
+- API Gateway  
+- Multiple AIDAP Application Servers  
+- Database cluster  
+- Cache layer  
+- External systems: SSO, LMS, Registration, Calendar, Email  
+
+ 
+## **Deployment Architecture Diagram**  
+<img width="1903" height="1226" alt="image" src="https://github.com/user-attachments/assets/96b268df-1073-4153-96fd-b4687a7ef62b" />
+
+
+---
+
+## 4. Evaluation Against Drivers
 
 ### Performance and Scalability
-- RS10
-- RS11
-- RA7
+- Horizontal autoscaling  
+- Cached responses  
+- Dedicated AI model adapter  
 
 ### Security and Privacy
-- RS7
-- RS8
-- RA5
-- RM7
+- SSO integration  
+- RBAC enforcement  
+- Encrypted data storage  
 
-### Personalization and History
-- R2
-- RS3
-- RS5
-- RS6
+### Data Reliability
+- Retry policies  
+- Partial data fallback  
+- Health checks for adapters  
 
-### Reliable Integration with University Systems
-- R3
-- RD1
-- RD2
-- RD3
-- RD4
+### Personalization and Analytics
+- Historic conversation storage  
+- LMS activity and calendar data aggregation  
 
 ---
 
-## 2. Element Selected for Refinement
-
-The element we selected to refine is the Conversational Core and Data Integration Subsystem.
-
-This section will cover:
-- Conversation Orchestrator
-- NLP / Model Gateway
-- Personalization Components
-- Session & Context Storage
-
-We picked this subsystem because it falls between security, performance, personalization, and external integrations.
+## 5. Remaining Risks
+- AI intent accuracy for domain specific content  
+- Performance under heavy exam period load  
+- Privacy issues for conversation logs  
 
 ---
-
-## 3. Design Concepts Used in This Iteration
-
-Now we will go over the design concepts we are using in this iteration:
-
-- Breaking up the conversational core into microservices
-- Using an API Gateway as the front door
-- Running stateless services that lean on a shared session/context store
-- Handling integrations with event queues and retries
-- Speeding up dashboards with a read-optimized query service
-- Keeping tabs on everything with central monitoring and metrics
-
-Each of these concepts will help with availability, reliability, scalability, and of course personalization.
-
----
-
-## 4. Breakdown of Subsystem Components
-
-Now, breaking down the subsystem itself, here's what we end up with:
-
-### API Gateway Service
-- Checks SSO tokens, routes traffic, and rate-limits requests
-
-### Conversation Orchestrator
-- Controls the conversation flow and pulls session info
-
-### NLP / Model Gateway Service
-- Deals with AI model calls, keeps track of versions, manages prompts, and protects against timeouts
-
-### Personalization Service
-- Stores what users like and their conversation history
-
-### Integration Facade Service
-- Connects to LMS, registration, calendar, and email systems, handling retries and data mapping
-
-### Session & Context Store
-- Keeps conversation context available across channels
-
-### Read-Optimized Dashboard Query Service
-- Delivers quick analytics and dashboard access through pre-computed data
-
-### Monitoring & Metrics Component
-- Tracks system metrics, logs, and traces
-
----
-
-## 5. Key Interfaces
-
-Here are the key interfaces:
-
-- Client to API Gateway: Handles authentication, normalizes requests, and forwards them
-- API Gateway to Conversation Orchestrator: Internal calls over REST/gRPC
-- Orchestrator and Session Store: Reads and writes session state
-- Orchestrator to NLP / Model Gateway: Sends prompts, manages timeouts, applies circuit breakers
-- Orchestrator and Personalization Service: Fetches user data, submits history updates
-- Orchestrator to Integration Facade: Gets real-time academic data
-- Integration Facade to External Systems: Uses REST/GraphQL, schedules sync jobs, manages retries
-- All Services to the Monitoring System: Ship logs, metrics, and trace data
-
----
-
-## 6. Driver Support Summary
-
-### Performance & Scalability
-- Stateless services  
-- Central session store  
-- Read-optimized queries  
-- Services can scale independently  
-
-### Security & Privacy
-- SSO validation at the gateway  
-- Role-based access control  
-- Internal-only communications  
-- Logging and auditing  
-
-### Personalization
-- Dedicated personalization service  
-- Session continuity  
-- Storing history summaries  
-
-### Integration Reliability
-- Integration facade  
-- Retry queues  
-- Scheduled sync jobs  
-- Circuit breakers  
-
-All of our components have been refined to support the refinements of each of the drivers.
-
----
-
-## 7. Remaining Risks
-
-Risks and trade-offs still on the table:
-
-- Picking the right message broker, session store, and monitoring stack
-- Balancing model latency against compute costs
-- Nailing down detailed RBAC rules for different user groups
-- Deciding on history/log retention and privacy policies
-- Ensuring that everything scales smoothly during peak times, like exams or registration
-
----
-
-## 8. Sequence Diagrams & Interfaces
-
-Now here are our sequence diagrams and service interfaces. This will show how the architecture supports the real-world use cases.
-
-
