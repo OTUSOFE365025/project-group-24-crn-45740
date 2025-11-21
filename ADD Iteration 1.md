@@ -1,10 +1,13 @@
-# Iteration 1 – Initial Architecture for AIDAP
-
 ## 1. Iteration Goal and Selected Drivers
 
-The goal of Iteration 1 is to create the initial architecture for the AI Powered Digital Assistant Platform (AIDAP) based directly on the project requirements. This iteration focuses on the foundational functional and quality drivers that shape the system.
+
+
+The goal of iteration 1 is to make the initial architecture for the ai powered digital assistant platform (AIDAP) based on the project requirements. This iterations main focus is on the foundational, functional and quality drivers that create the system.
+
+
 
 ### Selected Drivers
+
 - **R1** Conversational access for institutional data  
 - **R3** Integration with LMS, Registration, Calendar  
 - **R5** AI models for natural language interpretation  
@@ -15,62 +18,61 @@ The goal of Iteration 1 is to create the initial architecture for the AI Powered
 - **RA5** Security compliance  
 - **RM7** Privacy and risk management  
 
-These define the primary direction of the initial architecture.
+These define the main direction of the initial architecture.
 
 ---
 
 ## 2. Architectural Drivers
 
 ### 2 point 1 Functional Requirements (From AIDAP PDF)
-- Conversational Q and A for students, lecturers, administrators  
+- Conversational Q and A for students, lecturers and administrators  
 - Integration with LMS, Registration, Academic Calendar, Email  
 - Support for personalization and contextual responses  
-- Role separation (student, lecturer, admin)  
-- Ability to fetch deadlines, announcements, schedules, analytics  
+- Role separation between student, lecturer and admin  
+- Be able to fetch deadlines, announcements, schedules, analytics  
 
 ### 2 point 2 Quality Attributes
-- **Performance** Under 2 seconds average response time  
+- **Performance** response timeunder 2 seconds on average
 - **Availability** 99.5 percent uptime  
 - **Security** SSO, RBAC, protected student data  
 - **Scalability** Thousands of concurrent users  
-- **Modifiability** Swap or upgrade AI models easily  
+- **Modifiability** Upgrade or swap AI models easily  
 - **Usability** Simple conversational UI on web and mobile  
 
 ### 2 point 3 Constraints
-- Must use existing university systems (LMS, Registration, Calendar)
+-Must use the existing university systems (LMS, Calendar, Registration)
 - Must use standard APIs (REST)
 - Must support cloud deployment
-- Must support monitoring, logging, and model configuration
-
+- Must support logging, monitoring, and model configuration
 ---
 
 ## 3. Key Scenarios
 
 ### Scenario S1 – Student Checks Next Exam
-1. Student logs in via SSO  
+1. Student logs in from SSO  
 2. Asks “When is my next exam for SOFE 3650”  
 3. AI interprets intent  
-4. System queries LMS and Registration  
-5. Gathers date and returns result  
+4. System queries Registration and LMS
+5. Gathers date and returns the result  
 
 ### Scenario S2 – Lecturer Posts Course Announcement
 1. Lecturer logs in  
-2. Issues command to publish announcement  
-3. AI extracts course and content  
+2. Issues command to publish an announcement  
+3. AI extracts course and its content
 4. LMS adapter posts announcement  
-5. Students receive message  
+5. Students receive the message  
 
 ### Scenario S3 – Administrator Requests Analytics
 1. Admin signs in  
 2. Asks “Show weekly usage statistics”  
 3. Analytics subsystem retrieves logs  
-4. System returns summary  
+4. System returns a summary  
 
 ---
 
 ## 4. Initial Architectural Solution
 
-AIDAP is structured into three major layers.
+AIDAP is structured into three main layers.
 
 ### 4 point 1 Layered Architecture Overview
 - **Presentation Layer**: Web chat, mobile chat  
