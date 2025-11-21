@@ -2,14 +2,14 @@
 
 ## 1. Iteration Goal and Selected Drivers
 
-The goal of Iteration 2 is to refine the AIDAP architecture and produce detailed architectural views. The focus of this iteration is on drivers related to:
+The main goal for this iteration is to focus on drivers that shape security, performance, data reliability, and personalization:
 
 - Performance and scalability (RS10, RA7)  
 - Security and privacy (RS7, RS8, RA5, RM7)  
 - Data source reliability (RD1 to RD3)  
 - Personalization and analytics (RS3, R2, RL3, RA4)  
 
-These represent the highest risk and highest architectural impact areas.
+The element we selected to refine is the Conversational Core and Data Integration Subsystem.
 
 ---
 
