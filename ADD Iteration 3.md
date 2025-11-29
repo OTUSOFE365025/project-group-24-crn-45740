@@ -1,6 +1,6 @@
 # ADD Iteration 3 – Use Case 1: Ask a Question
 
-This document applies the ADD process (Iteration 3) to **Use Case 1: Ask a question** for the AI-Powered Digital Assistant Platform (AIDAP).
+This document applies the ADD process (Iteration 3) to **Use Case 1: Ask a Question** for the AI-Powered Digital Assistant Platform (AIDAP).
 
 ---
 
@@ -10,59 +10,59 @@ This document applies the ADD process (Iteration 3) to **Use Case 1: Ask a quest
 
 Refine the architecture for **Use Case 1: Ask a question** so that a student can:
 
-> Log in with SSO, ask a question about deadlines, schedules, or grades, and receive a personalized answer within the required performance, availability, and security constraints.
+Use the AI system after having logged in through SSO to ask questions about deadlines, schedules, and grades and get an individualized response instantaneously while the system operates within the defined performance, availability, and security parameters.
 
-Use Case 1 summary:
+Summary of Use Case 1:
 
-- Actor: student  
-- Goal: ask the assistant about deadlines, schedules, and campus services  
-- Main flow:  
-  1. Student logs in through SSO  
-  2. AI interprets the question  
-  3. AI fetches information from the calendar or LMS  
-  4. Output is shown in the chat  
+- **Actor**: student  
+- **Goal**: to ask the AI Assistant questions about deadlines and schedules as well as campus services  
+- **Main flow**:  
+  1. The student authenticates using SSO  
+  2. The AI understands the question  
+  3. The AI retrieves data from the calendar and/or LMS  
+  4. The result is displayed in the chat  
 
 ### 1.2 Selected Quality Attribute Drivers
 
 We focus on these quality attributes:
 
 - **Performance**  
-  - The assistant replies to a typical student question within **2 seconds** on average under normal load.
+  - The assistant provides a response to a typical question asked by students within a span of **2 seconds** on an average basis on typical system load.
 
 - **Availability and Reliability**  
-  - The platform continues to work even if a node fails or an external data source is slow and should achieve at least 99.5% uptime.
+  - The platform is able to continue operating even when an external source is slow or when a node crashes and should obtain at least 99.5 uptime.  
 
 - **Security and Privacy**  
-  - Only authenticated users can access their own data through SSO.  
-  - No student’s data is revealed to another user.
+  - Users can only access their own information through SSO and authentication.  
+  - No student information is disclosed to any other user.  
 
 - **Personalization** (cross cutting)  
-  - Historical interactions and preferences are used to tailor responses.
+  - Responses are customized based on prior engagements and user preferences.  
 
 ---
 
-## 2. Choose the Element to Refine
+## 2. Pick an Element to Improve
 
-From Iterations 1 and 2, we refine the **Conversational Core and Data Integration path** for this iteration, specifically for Use Case 1.
+In this case, we focus on refining the **Conversational Core and Data Integration Path** based on the previous iterations - 1 and 2, and this will be the focus for Use Case 1.
 
-This path includes:
+This path is composed of:
 
-- Chat Web Client (browser chat UI)  
+- Web Browser Chat Client  
 - API Gateway and Load Balancer  
-- Auth and SSO Adapter  
-- Conversation Orchestrator  
-- NLP / Model Gateway  
+- Authentication and SSO Adapter  
+- Orchestrator of Conversations  
+- NLP/Model Gateway  
 - Personalization Service  
 - Session and Context Store  
 - Integration Facade Service (LMS, Registration, Calendar, Email)  
 - AIDAP Database  
 - Monitoring and Logging  
 
-We focus on this slice because:
+The reasons focus on this slice are:
 
-- It determines end-to-end latency (performance).  
-- It is directly affected by external system failures (availability).  
-- It is where SSO and authorization are enforced (security).  
+- It defines the maximum allowable end-to-end latency (performance).  
+- It would be the most impacted by external system failures (availability).  
+- This is where SSO and authorization policies are applied (security).  
 - It uses history and preferences (personalization).
 
 ---
@@ -76,7 +76,7 @@ Design concepts used in Iteration 3:
   - Recent context and session data are stored in a fast Session and Context Store.
 
 - **API Gateway as single entry point**  
-  - All external calls go through the gateway, which:
+  - All external calls go through the gateway, which:  
     - Terminates HTTPS  
     - Validates SSO tokens  
     - Applies rate limits  
@@ -88,16 +88,17 @@ Design concepts used in Iteration 3:
 
 - **Bulkhead and circuit breaker patterns**  
   - External systems (LMS, Registration, Calendar) are accessed only via Integration Facade.  
-  - Timeouts and circuit breakers prevent slow or failing external systems from blocking the entire request pipeline.
+  - Timeouts and circuit breakers will prevent slow or failing external systems from blocking the entire request pipeline.
 
 - **Centralized authorization and auditing**  
   - Role and scope checks are done at the gateway and in Integration Facade.  
-  - Access to student-specific data is logged for auditing.
+  - Access to the student-specific data is logged for auditing.
 
 - **Configurable personalization depth**  
-  - Personalization Service can use more or less history per request, trading off answer quality and latency.
+  - Personalization Service can use more or less history based of the request, trading off answer quality and latency.
 
 ---
+
 
 ## 4. Decompose the Selected Element
 
