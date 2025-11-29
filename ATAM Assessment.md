@@ -11,7 +11,7 @@ The goal of this ATAM assessment is to check how well the architecture satisfies
 - Security and privacy  
 - Modifiability  
 
-We focus on the **Ask a question** path as it was clarified in ADD Iteration 3 and reuse the architecture and quality attributes defined in Iterations 1 and 2.
+We focused on the **Ask a question** path as it was clarified in ADD Iteration 3 and reuse the architecture and quality attributes defined in Iterations 1 and 2.
 
 ---
 
@@ -27,12 +27,12 @@ Students and staff receive secure, reliable, and responsive access to institutio
 - **P1 – Normal query latency**  
   - **Stimulus:** A student asks a question about schedules or deadlines during normal load.  
   - **Environment:** 500–1000 concurrent users, all external systems healthy.  
-  - **Response:** AIDAP replies in ≤ 2 seconds on average.  
+  - **Response:** AIDAP replies in less than or equal to 2 seconds on average.  
   - **Importance:** High  
   - **Risk:** Medium  
 
 - **P2 – Peak exam load**  
-  - **Stimulus:** Many students ask questions during the week before exams.  
+  - **Stimulus:** Many students ask questions during the week before the exams.  
   - **Environment:** Up to 5000 concurrent users, bursts of traffic.  
   - **Response:** System stays responsive, most queries are answered in less than or equal to 3 seconds with degradation if needed.  
   - **Importance:** High  
@@ -66,7 +66,7 @@ Students and staff receive secure, reliable, and responsive access to institutio
 - **S2 – Cross user data isolation**  
   - **Stimulus:** Internal bug or misconfiguration that could show one student’s data to another.  
   - **Environment:** Normal operation.  
-  - **Response:** Architecture and access control prevent this from happening; any suspicious behavior can be detected in logs.  
+  - **Response:** Architecture and access control prevent this from happening. any suspicious behavior can be detected in logs.  
   - **Importance:** Very High  
   - **Risk:** Medium to High  
 
@@ -137,12 +137,12 @@ The table bellow classifies key scenarios as **risks**, **non risks**, **sensiti
   The number of instances per service and auto scaling thresholds directly affect performance and resilience under load.
 
 - **SP3 – Coupling in Integration Facade (M1)**  
-  If Integration Facade APIs are too tightly coupled to specific external schemas, adding new systems will be costly.
+  If Integration Facade APIs are too tightly coupled to specific external schemas, adding new systems will be expensive.
 
 ### 4.4 Trade-off Points
 
 - **TP1 – Freshness vs performance (C1)**  
-  More aggressive caching improves latency and reduces external API calls but increases the risk of showing slightly outdated information.
+  More aggressive caching improves latency and reduces external API calls but increases the risk of showing outdated information.
 
 - **TP2 – Personalization depth vs latency (C2)**  
   Using more context and historical data improves answer quality but increases processing time and data access overhead.
