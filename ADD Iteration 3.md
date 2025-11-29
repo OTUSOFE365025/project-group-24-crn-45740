@@ -117,74 +117,78 @@ Design concepts used in Iteration 3:
 | AIDAP Database              | Stores long-term interaction history, user profiles, configuration, and analytics                  |
 | Monitoring and Logging      | Collects metrics (latency, errors, throughput) and logs for debugging and auditing                 |
 
-### 4.2 Allocation to Deployment Nodes
+### 4.2 Distribution to Use Nodes
 
-Deployment (reusing Iteration 2):
+Deployment (reuse of Iteration 2):
 
-- **Student device** – Web browser running Chat Web Client.  
-- **Web Frontend Host** – Serves the built React app and static assets.  
-- **API Gateway and Load Balancer** – Hosts API Gateway and Auth / SSO Adapter, performs TLS termination and routing.  
-- **Application Service Cluster** – Hosts Conversation Orchestrator, NLP / Model Gateway, Personalization Service, Integration Facade, Monitoring and Logging, and scales horizontally.  
-- **Session and Context Store** – Shared in-memory data store (for example Redis) for session and context.  
-- **AIDAP Database** – Relational or document database for persistent data.  
-- **University Systems** – LMS, Registration, Calendar, and Email systems accessed through standard APIs.
+- **Student device** – A web browser accessing Chat Web Client.
+
+- **Web Frontend Host** – Serves the built React application and static resources.  
+
+- **API Gateway and Load Balancer** – Provides API Gateway and Auth / SSO Adapter, does TLS termination and routing.  
+
+- **Application Service Cluster** – Runs Conversation Orchestrator, NLP / Model Gateway, Personalization Service, Integration Facade, and Monitoring and Logging, and is able to scale out.  
+
+- **Session and Context Store** – A shared memory data store (Redis, for example) for session and context.  
+
+- **AIDAP Database** – This database can be relational or NoSQL for persisting data.  
+
+- **University Systems** – Standard APIs for LMS, Registration, Calendar, and Email systems.
+
 
 ---
 
-## 5. Define Interfaces
+5. Define Interfaces
 
-### 5.1 Chat Web Client → API Gateway
+5.1. Chat Web Client to API Gateway
 
-Endpoint: `POST /api/chat/query`  
+Endpoint: POST /api/chat/query
 
-Request example:
+Example Request:
 
-    {
-      "sessionId": "abc123",
-      "userId": "s1234567",
-      "message": "When is my next CSCI 3070U midterm?",
-      "locale": "en-CA"
-    }
+{
+  "sessionId": "abc123",
+  "userId": "s1234567",
+  "message": "When is my next CSCI 3070U midterm?",
+  "locale": "en-CA"
+}
 
-Response example:
+Example Response:
 
-    {
-      "answerText": "Your next CSCI 3070U midterm is on November 30 at 9:00 AM in UA 2220.",
-      "sourceSystems": ["LMS", "Calendar"],
-      "latencyMs": 850,
-      "fromCache": false
-    }
+{
+  "answerText": "Your next CSCI 3070U midterm is on November 30 at 9:00 AM in UA 2220.",
+  "sourceSystems": ["LMS", "Calendar"],
+  "latencyMs": 850,
+  "fromCache": false
+}
 
-### 5.2 API Gateway → Conversation Orchestrator
+5.2. API Gateway to Conversation Orchestrator
 
-Endpoint: `POST /conversation/handleQuery`  
+Endpoint: POST /conversation/handleQuery
 
 Includes:
+- userId and roles
+- validated token claims
+- sessionId
+- message text
+- locale
+- correlationId for logging
 
-- userId and roles  
-- validated token claims  
-- sessionId  
-- message text  
-- locale  
-- correlationId for logging  
+5.3. Conversation Orchestrator to NLP / Model Gateway
 
-### 5.3 Conversation Orchestrator → NLP / Model Gateway
-
-Endpoint: `POST /nlp/interpret`  
+Endpoint: POST /nlp/interpret
 
 Payload:
+- message text
+- trimmed conversation history / context
+- latencyBudgetMs
 
-- message text  
-- trimmed conversation history / context  
-- latencyBudgetMs  
-
-### 5.4 Conversation Orchestrator → Integration Facade Service
+5.4. Conversation Orchestrator to Integration Facade Service
 
 Example endpoints:
-
-- `POST /integration/getNextExam`  
-- `POST /integration/getUpcomingDeadlines`  
-- `POST /integration/getTodaySchedule`  
+- POST /integration/getNextExam
+- POST /integration/getUpcomingDeadlines
+- POST /integration/getTodaySchedule
 
 Payload includes:
 
@@ -192,80 +196,94 @@ Payload includes:
 - optional course identifiers  
 - date ranges or filters  
 
-### 5.5 Conversation Orchestrator / Personalization → Session and Context Store
+### 5.5 Conversion Orchestrator / Personalization → Session and Context Store  
 
-- `GET /session/{sessionId}` – returns recent turns and flags.  
-- `PUT /session/{sessionId}` – appends new turn and updates stored context.  
+- `GET /session/{sessionId}` – retrieves recent turns and flags.  
 
-All internal interfaces are secured by internal authentication and reachable only within the cluster network.
+- `PUT /session/{sessionId}` – appends a new turn and updates context.  
 
----
+All endpoints within the cluster have internal authentication and are protected as well.  
 
-## 6. Verify and Validate Against Drivers
+---  
 
-### 6.1 Performance
+## 6. Verify and Validate Against Drivers  
 
-**Scenario P1 – Normal query latency**
+### 6.1 Performance  
+
+**Scenario P1 – Normal query latency**  
 
 - Environment: 500–1000 concurrent users, all external systems healthy.  
-- Stimulus: authenticated student asks “When is my next exam?”.  
-- Response: answer returned to Chat Web Client within 2 seconds on average.
 
-Design support:
+- Stimulus: an authenticated student query, “When is my next exam?”.  
 
-- Stateless services with horizontal scaling in the Application Service Cluster.  
+- Response: an answer returns in 2 seconds on average to the Chat Web Client.  
+
+Design support:  
+
+- Application Service Cluster contains stateless services with horizontal scaling.  
+
 - Fast Session and Context Store for context lookups.  
-- Short-lived caching of read-heavy data (for example next exam) in Integration Facade.  
-- Latency budgets and timeouts configured in Conversation Orchestrator and Integration Facade.
 
-### 6.2 Availability and Reliability
+- Latency budgets and timeouts are configured in Conversation Orchestrator and Integration Facade. Short-lived caching of read-heavy data (for example next exam) in Integration Facade.  
 
-**Scenario A1 – LMS slowdown**
+### 6.2 Availability and Reliability  
 
-- Environment: LMS API is slow or temporarily unavailable.  
-- Stimulus: student asks about upcoming exams that require LMS data.  
-- Response:
-  - Integration Facade uses cached data when possible.  
-  - Circuit breakers open to stop repeated failing calls.  
-  - AIDAP returns a cached or partial answer and indicates limited live data instead of hanging.
+**Scenario A1 – LMS slowdown**  
 
-Design support:
+- Environment: the LMS API is slow, or temporarily unavailable.  
 
-- External dependencies are isolated behind Integration Facade.  
-- Circuit breaker and retry policies are applied to external calls.  
-- Independent scaling and health checks keep core services responsive.
+- Stimulus: student asks about upcoming exams that require data from the LMS.  
 
-### 6.3 Security and Privacy
+- Response:  
 
-**Scenario S1 – Unauthorized request**
+1. Integration Facade utilizes cached data when available.  
 
-- Environment: public internet.  
-- Stimulus: request to `/api/chat/query` without a valid SSO token.  
-- Response:
-  - API Gateway rejects the request with an error code.  
-  - No internal services are invoked.  
-  - Event is logged as a security warning.
+2. Breakers trip to prevent looping of failed calls.  
 
-Design support:
+3. AIDAP returns without additional calls to the LMS.
 
-- SSO token validation at API Gateway and Auth / SSO Adapter.  
-- Internal services trust only validated tokens and check userId and roles before accessing data.  
-- Access to LMS and registration data goes through Integration Facade with additional role checks.
+
+### 6.3 Security and Privacy  
+
+**Scenario S1 – Unauthorized request**  
+
+- Environment: public internet.   
+
+- Stimulus: request to `/api/chat/query` without a valid SSO token.   
+
+- Response:  
+
+- API Gateway denies the request.  
+
+- Internal services do not respond.  
+
+- Security warning is logged.  
+
+Design support:  
+
+- SSO tokens are validated at API Gateway and Auth / SSO Adapter.  
+
+- Internal services trust only tokens validated and validated token data that includes userId and roles.  
+
+- LMS and registration data access is routed through Integration Facade and subject to additional roles checks.
 
 ---
 
-## 7. Record Risks, Issues, and Trade-offs
+## 7. Record Risks, Issues, and Trade-offs  
 
-### 7.1 Risks
+### 7.1 Risks  
 
 - **R3.1 – Model latency spikes**  
-  AI model inference may sometimes take longer than expected, causing responses to exceed the 2-second target.
+
+AI model inference is not guaranteed to meet the 2-second timeframe.  
 
 - **R3.2 – External dependency failures**  
-  Long outages or severe slowdowns in LMS or Calendar can result in stale or partial answers and reduced user trust.
+
+Major unresponsiveness or lag in LMS or Calendar can lead to response content that is incomplete or incorrect. This, in turn, reduces trust from the users.  
 
 - **R3.3 – Session consistency issues**  
-  Bugs or race conditions in session read/write logic can break personalization or confuse the conversation context.
+
+There might be bugs or race conditions in consistency in the session read and write that can lead to personalization loss or confusion in conversation context.
 
 - **R3.4 – Misconfigured security rules**  
   Incorrect role or scope settings may either block legitimate access or accidentally expose data.
