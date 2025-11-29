@@ -11,7 +11,7 @@ The goal of this ATAM assessment is to check how well the architecture satisfies
 - Security and privacy  
 - Modifiability  
 
-We focus on the **Ask a question** path as refined in ADD Iteration 3 and reuse the architecture and quality attributes defined in Iterations 1 and 2.
+We focus on the **Ask a question** path as it was clarified in ADD Iteration 3 and reuse the architecture and quality attributes defined in Iterations 1 and 2.
 
 ---
 
@@ -25,7 +25,7 @@ Students and staff receive secure, reliable, and responsive access to institutio
 ### 2.2 Performance
 
 - **P1 – Normal query latency**  
-  - **Stimulus:** A student asks a typical question about schedules or deadlines during normal load.  
+  - **Stimulus:** A student asks a question about schedules or deadlines during normal load.  
   - **Environment:** 500–1000 concurrent users, all external systems healthy.  
   - **Response:** AIDAP replies in ≤ 2 seconds on average.  
   - **Importance:** High  
@@ -34,7 +34,7 @@ Students and staff receive secure, reliable, and responsive access to institutio
 - **P2 – Peak exam load**  
   - **Stimulus:** Many students ask questions during the week before exams.  
   - **Environment:** Up to 5000 concurrent users, bursts of traffic.  
-  - **Response:** System stays responsive, most queries answered in less than or equal to 3 seconds with graceful degradation if needed.  
+  - **Response:** System stays responsive, most queries are answered in less than or equal to 3 seconds with degradation if needed.  
   - **Importance:** High  
   - **Risk:** High  
 
@@ -43,7 +43,7 @@ Students and staff receive secure, reliable, and responsive access to institutio
 - **A1 – External system failure**  
   - **Stimulus:** LMS becomes slow or unavailable.  
   - **Environment:** Normal or peak usage.  
-  - **Response:** AIDAP degrades gracefully, returning cached or partial answers and clear messages instead of timing out.  
+  - **Response:** AIDAP degrades, returning cached or incomplete answers and clear messages instead of timing out.  
   - **Importance:** High  
   - **Risk:** High  
 
@@ -59,7 +59,7 @@ Students and staff receive secure, reliable, and responsive access to institutio
 - **S1 – Unauthorized access attempt**  
   - **Stimulus:** A request hits `/api/chat/query` without a valid SSO token.  
   - **Environment:** Internet facing API gateway.  
-  - **Response:** Request is rejected, no data is returned, event is logged.  
+  - **Response:** Request is rejected, no data is returned and event is logged.  
   - **Importance:** High  
   - **Risk:** Low  
 
