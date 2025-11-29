@@ -82,7 +82,7 @@ Students and staff receive secure, reliable, and responsive access to institutio
 - **M2 – Swap AI model provider**  
   - **Stimulus:** The AI model provider changes (for example a new API or vendor).  
   - **Environment:** System is live.  
-  - **Response:** Only the NLP or Model Gateway implementation needs to change, with minimal impact on other services.  
+  - **Response:** Only the NLP or Model Gateway implementation will have to change, with little impact on other services.  
   - **Importance:** Medium  
   - **Risk:** Medium  
 
@@ -131,7 +131,7 @@ The table bellow classifies key scenarios as **risks**, **non risks**, **sensiti
 ### 4.3 Sensitivity Points
 
 - **SP1 – Cache configuration for academic data (C1)**  
-  Changing cache TTL for exam dates and deadlines has a huge effect on both data freshness and performance.
+  Changing cache TTL for exam dates and deadlines has a huge effect on data freshness and performance.
 
 - **SP2 – Cluster size and scaling policy (P2, A2)**  
   The number of instances per service and auto scaling thresholds directly affect performance and resilience under load.
@@ -159,4 +159,4 @@ The table bellow classifies key scenarios as **risks**, **non risks**, **sensiti
 - **Key sensitivity points** are cache configuration, sizing and scaling of the service cluster, and the design of the Integration Facade.  
 - **Major trade-offs** involve balancing performance against data freshness and personalization depth, and balancing tight security controls against ease of use for students and staff.
 
-These ATAM results should be revisited if new requirements are introduced (for example additional user roles or new institutional systems) or if the deployment environment changes.
+These ATAM results should be revisited if new requirements are introduced (for example more user roles or new institutional systems) or if the deployment environment changes.
