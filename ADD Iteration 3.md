@@ -121,212 +121,203 @@ Design concepts used in Iteration 3:
 
 Deployment (reuse of Iteration 2):
 
-- **Student device** – A web browser accessing Chat Web Client.
-
+- **Student device** – A web browser accessing Chat Web Client.  
 - **Web Frontend Host** – Serves the built React application and static resources.  
-
 - **API Gateway and Load Balancer** – Provides API Gateway and Auth / SSO Adapter, does TLS termination and routing.  
-
 - **Application Service Cluster** – Runs Conversation Orchestrator, NLP / Model Gateway, Personalization Service, Integration Facade, and Monitoring and Logging, and is able to scale out.  
-
 - **Session and Context Store** – A shared memory data store (Redis, for example) for session and context.  
-
 - **AIDAP Database** – This database can be relational or NoSQL for persisting data.  
-
 - **University Systems** – Standard APIs for LMS, Registration, Calendar, and Email systems.
-
 
 ---
 
-5. Define Interfaces
+## 5. Define Interfaces
 
-5.1. Chat Web Client to API Gateway
+### 5.1. Chat Web Client to API Gateway
 
 Endpoint: POST /api/chat/query
 
 Example Request:
 
+```
 {
   "sessionId": "abc123",
   "userId": "s1234567",
   "message": "When is my next CSCI 3070U midterm?",
   "locale": "en-CA"
 }
-
+```
 Example Response:
-
+```
 {
   "answerText": "Your next CSCI 3070U midterm is on November 30 at 9:00 AM in UA 2220.",
   "sourceSystems": ["LMS", "Calendar"],
   "latencyMs": 850,
   "fromCache": false
 }
-
-5.2. API Gateway to Conversation Orchestrator
-
+```
+### 5.2. API Gateway to Conversation Orchestrator
 Endpoint: POST /conversation/handleQuery
 
 Includes:
-- userId and roles
-- validated token claims
-- sessionId
-- message text
-- locale
-- correlationId for logging
 
-5.3. Conversation Orchestrator to NLP / Model Gateway
+userId and roles
 
+validated token claims
+
+sessionId
+
+message text
+
+locale
+
+correlationId for logging
+
+### 5.3. Conversation Orchestrator to NLP / Model Gateway
 Endpoint: POST /nlp/interpret
 
 Payload:
-- message text
-- trimmed conversation history / context
-- latencyBudgetMs
 
-5.4. Conversation Orchestrator to Integration Facade Service
+message text
 
+trimmed conversation history/context
+
+latencyBudgetMs
+
+### 5.4. Conversation Orchestrator to Integration Facade Service
 Example endpoints:
-- POST /integration/getNextExam
-- POST /integration/getUpcomingDeadlines
-- POST /integration/getTodaySchedule
+
+POST /integration/getNextExam
+
+POST /integration/getUpcomingDeadlines
+
+POST /integration/getTodaySchedule
 
 Payload includes:
 
-- userId and role  
-- optional course identifiers  
-- date ranges or filters  
+userId and role
 
-### 5.5 Conversion Orchestrator / Personalization → Session and Context Store  
+optional course identifiers
 
-- `GET /session/{sessionId}` – retrieves recent turns and flags.  
+date ranges or filters
 
-- `PUT /session/{sessionId}` – appends a new turn and updates context.  
+### 5.5 Conversion Orchestrator / Personalization → Session and Context Store
+GET /session/{sessionId} – retrieves recent turns and flags.
 
-All endpoints within the cluster have internal authentication and are protected as well.  
+PUT /session/{sessionId} – appends a new turn and updates context.
 
----  
-
-## 6. Verify and Validate Against Drivers  
-
-### 6.1 Performance  
-
-**Scenario P1 – Normal query latency**  
-
-- Environment: 500–1000 concurrent users, all external systems healthy.  
-
-- Stimulus: an authenticated student query, “When is my next exam?”.  
-
-- Response: an answer returns in 2 seconds on average to the Chat Web Client.  
-
-Design support:  
-
-- Application Service Cluster contains stateless services with horizontal scaling.  
-
-- Fast Session and Context Store for context lookups.  
-
-- Latency budgets and timeouts are configured in Conversation Orchestrator and Integration Facade. Short-lived caching of read-heavy data (for example next exam) in Integration Facade.  
-
-### 6.2 Availability and Reliability  
-
-**Scenario A1 – LMS slowdown**  
-
-- Environment: the LMS API is slow, or temporarily unavailable.  
-
-- Stimulus: student asks about upcoming exams that require data from the LMS.  
-
-- Response:  
-
-1. Integration Facade utilizes cached data when available.  
-
-2. Breakers trip to prevent looping of failed calls.  
-
-3. AIDAP returns without additional calls to the LMS.
-
-
-### 6.3 Security and Privacy  
-
-**Scenario S1 – Unauthorized request**  
-
-- Environment: public internet.   
-
-- Stimulus: request to `/api/chat/query` without a valid SSO token.   
-
-- Response:  
-
-- API Gateway denies the request.  
-
-- Internal services do not respond.  
-
-- Security warning is logged.  
-
-Design support:  
-
-- SSO tokens are validated at API Gateway and Auth / SSO Adapter.  
-
-- Internal services trust only tokens validated and validated token data that includes userId and roles.  
-
-- LMS and registration data access is routed through Integration Facade and subject to additional roles checks.
+All endpoints within the cluster have internal authentication and are protected as well.
 
 ---
 
-## 7. Record Risks, Issues, and Trade-offs  
+## 6. Verify and Validate Against Drivers
+### 6.1 Performance
+Scenario P1 – Normal query latency
 
-### 7.1 Risks  
+Environment: 500–1000 concurrent users, all external systems healthy.
 
-- **R3.1 – Model latency spikes**  
+Stimulus: an authenticated student query, “When is my next exam?”.
 
-AI model inference is not guaranteed to meet the 2-second timeframe.  
+Response: an answer returns in 2 seconds on average to the Chat Web Client.
 
-- **R3.2 – External dependency failures**  
+Design support:
 
-Major unresponsiveness or lag in LMS or Calendar can lead to response content that is incomplete or incorrect. This, in turn, reduces trust from the users.  
+Application Service Cluster contains stateless services with horizontal scaling.
 
-- **R3.3 – Session consistency issues**  
+Fast Session and Context Store for context lookups.
 
+Latency budgets and timeouts are configured in Conversation Orchestrator and Integration Facade. Short-lived caching of read-heavy data (for example next exam) in Integration Facade.
+
+### 6.2 Availability and Reliability
+Scenario A1 – LMS slowdown
+
+Environment: the LMS API is slow, or temporarily unavailable.
+
+Stimulus: student asks about upcoming exams that require data from the LMS.
+
+Response:
+
+Integration Facade utilizes cached data when available.
+
+Breakers trip to prevent looping of failed calls.
+
+AIDAP returns without additional calls to the LMS.
+
+### 6.3 Security and Privacy
+Scenario S1 – Unauthorized request
+
+Environment: public internet.
+
+Stimulus: request to /api/chat/query without a valid SSO token.
+
+Response:
+
+API Gateway denies the request.
+
+Internal services do not respond.
+
+Security warning is logged.
+
+Design support:
+
+SSO tokens are validated at API Gateway and Auth / SSO Adapter.
+
+Internal services trust only tokens validated and validated token data that includes userId and roles.
+
+LMS and registration data access is routed through Integration Facade and subject to additional roles checks.
+
+---
+
+## 7. Record Risks, Issues, and Trade-offs
+### 7.1 Risks
+R3.1 – Model latency spikes
+AI model inference is not guaranteed to meet the 2-second timeframe.
+
+R3.2 – External dependency failures
+Major unresponsiveness or lag in LMS or Calendar can lead to response content that is incomplete or incorrect. This, in turn, reduces trust from the users.
+
+R3.3 – Session consistency issues
 There might be bugs or race conditions in consistency in the session read and write that can lead to personalization loss or confusion in conversation context.
 
-- **R3.4 – Misconfigured security rules**  
-  Incorrect role or scope settings may either block legitimate access or accidentally expose data.
+R3.4 – Misconfigured security rules
+Incorrect role or scope settings may either block legitimate access or accidentally expose data.
 
 ### 7.2 Non-Risks
+NR3.1 – Chat UI rendering performance
+The chat UI is lightweight and unlikely to be the main performance bottleneck.
 
-- **NR3.1 – Chat UI rendering performance**  
-  The chat UI is lightweight and unlikely to be the main performance bottleneck.
+NR3.2 – SSO infrastructure stability
+The system reuses a mature institutional SSO system already used in production by other services.
 
-- **NR3.2 – SSO infrastructure stability**  
-  The system reuses a mature institutional SSO system already used in production by other services.
-
-- **NR3.3 – Internal network latency**  
-  Internal service-to-service calls are fast compared with external API calls and are unlikely to dominate latency.
+NR3.3 – Internal network latency
+Internal service-to-service calls are fast compared with external API calls and are unlikely to dominate latency.
 
 ### 7.3 Sensitivity Points
+SP3.1 – Cache TTL for academic data
+Short TTL improves freshness but increases load and latency.
+Long TTL improves performance but risks stale exam dates and schedules.
 
-- **SP3.1 – Cache TTL for academic data**  
-  Short TTL improves freshness but increases load and latency.  
-  Long TTL improves performance but risks stale exam dates and schedules.
+SP3.2 – Maximum NLP inference time
+Higher values improve response richness but increase end-to-end latency.
+Lower values protect latency but may cut off model responses.
 
-- **SP3.2 – Maximum NLP inference time**  
-  Higher values improve response richness but increase end-to-end latency.  
-  Lower values protect latency but may cut off model responses.
+SP3.3 – Session context size
+More context improves personalization and continuity but increases memory and access time.
+Less context improves speed but may reduce answer quality.
 
-- **SP3.3 – Session context size**  
-  More context improves personalization and continuity but increases memory and access time.  
-  Less context improves speed but may reduce answer quality.
-
-- **SP3.4 – Autoscaling thresholds**  
-  If too conservative, the system may not scale up quickly enough under spikes.  
-  If too aggressive, the system may overprovision and waste resources.
+SP3.4 – Autoscaling thresholds
+If too conservative, the system may not scale up quickly enough under spikes.
+If too aggressive, the system may overprovision and waste resources.
 
 ### 7.4 Trade-offs
+TP3.1 – Freshness vs performance
+Using only live data gives the freshest answers but increases latency and dependency on external systems.
+Using cached data improves performance and resilience but may present slightly outdated information.
 
-- **TP3.1 – Freshness vs performance**  
-  Using only live data gives the freshest answers but increases latency and dependency on external systems.  
-  Using cached data improves performance and resilience but may present slightly outdated information.
+TP3.2 – Personalization depth vs latency
+Deeper personalization uses more history and computation, improving relevance but slowing responses.
+Shallower personalization keeps responses fast but may feel generic.
 
-- **TP3.2 – Personalization depth vs latency**  
-  Deeper personalization uses more history and computation, improving relevance but slowing responses.  
-  Shallower personalization keeps responses fast but may feel generic.
-
-- **TP3.3 – Security strictness vs usability**  
-  Very strict security (short token lifetimes, more checks) improves protection but may require frequent logins and cause user frustration.  
-  More relaxed settings improve convenience but increase risk.
+TP3.3 – Security strictness vs usability
+Very strict security (short token lifetimes, more checks) improves protection but may require frequent logins and cause user frustration.
+More relaxed settings improve convenience but increase risk.
